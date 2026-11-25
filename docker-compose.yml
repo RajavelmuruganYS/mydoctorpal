@@ -1,0 +1,24 @@
+# Local PostgreSQL for the Hospital EHR backend.
+#   docker compose up -d db
+# The backend defaults (application.yaml) already match these values.
+services:
+  db:
+    image: postgres:16
+    container_name: ehr-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hospital_ehr
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "123456"
+    ports:
+      - "5433:5432"
+    volumes:
+      - ehr-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hospital_ehr"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  ehr-pgdata:
